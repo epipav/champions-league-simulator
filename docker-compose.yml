@@ -1,0 +1,84 @@
+name: champions-league-simulator
+services:
+  database:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: champions_league
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "54320:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - champions-league-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Laravel Backend (PHP-FPM)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /var/www/html
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=pgsql
+      - DB_HOST=database
+      - DB_PORT=5432
+      - DB_DATABASE=champions_league
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=secret
+    volumes:
+      - ./backend:/var/www/html
+    networks:
+      - champions-league-network
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - champions-league-network
+    depends_on:
+      - backend
+
+  # Vue.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - champions-league-network
+    depends_on:
+      - nginx
+
+networks:
+  champions-league-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

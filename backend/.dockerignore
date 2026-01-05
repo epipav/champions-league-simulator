@@ -1,0 +1,49 @@
+# Dependencies
+/vendor
+/node_modules
+
+# Environment files
+.env
+.env.backup
+.env.production
+
+# IDE files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Laravel specific
+/storage/*.key
+/storage/logs/*
+!/storage/logs/.gitignore
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Testing
+.phpunit.result.cache
+coverage
+
+# Documentation
+README.md
+*.md
+
+# Docker files (to avoid recursion)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Database
+*.sqlite
+*.sqlite-journal
+database/database.sqlite
