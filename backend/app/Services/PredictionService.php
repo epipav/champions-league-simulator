@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class PredictionService
 {
-    private const SIMULATIONS = 1000;
+    private const SIMULATIONS = 100;
 
     private const HOME_ADVANTAGE = 1.15;
     // private const RANDOMNESS = 0.30;

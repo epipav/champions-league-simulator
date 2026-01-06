@@ -5,7 +5,7 @@
     "keywords": ["champions-league", "football", "simulator", "laravel", "api"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.1",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
@@ -33,6 +33,10 @@
     },
     "scripts": {
         "post-autoload-dump": [
+            "@php -r \"file_exists('bootstrap/cache') || mkdir('bootstrap/cache', 0755, true);\"",
+            "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache', 0755, true);\"",
+            "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions', 0755, true);\"",
+            "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views', 0755, true);\"",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
