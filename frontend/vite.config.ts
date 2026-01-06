@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
+    allowedHosts: process.env.VITE_ALLOWED_HOSTS?.split(',') || ['localhost'],
     proxy: {
       '/api': {
         target: 'http://nginx:80',
